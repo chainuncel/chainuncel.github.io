@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鏈叔 AI 代理服務 | ChainUncel AI Agent</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Noto Sans TC",sans-serif;background:#0a0a0f;color:#e0e0e0;}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;background:rgba(10,10,15,0.95);backdrop-filter:blur(10px);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;z-index:100;border-bottom:1px solid rgba(99,102,241,0.2);}
+nav .logo{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+nav a{color:#a0a0b0;text-decoration:none;margin-left:28px;font-size:0.9rem;transition:color 0.2s;}
+nav a:hover{color:#a78bfa;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 20px 40px;background:radial-gradient(ellipse at 50% 40%,rgba(99,102,241,0.12) 0%,transparent 70%);}
+.hero h1{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;line-height:1.2;margin-bottom:20px;background:linear-gradient(135deg,#fff 0%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero p{font-size:1.2rem;color:#a0a0b0;max-width:600px;margin:0 auto 40px;line-height:1.8;}
+.btn{display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#6366f1,#a78bfa);border-radius:50px;color:#fff;font-weight:700;text-decoration:none;font-size:1rem;transition:transform 0.2s,box-shadow 0.2s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,0.4);}
+.badge{display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.4);color:#a78bfa;padding:6px 16px;border-radius:50px;font-size:0.85rem;margin-bottom:20px;}
+
+/* STATS */
+.stats{display:flex;justify-content:center;gap:60px;padding:40px 20px;flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat .num{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat .label{color:#606080;font-size:0.9rem;margin-top:4px;}
+
+/* SECTION */
+section{padding:80px 20px;max-width:1100px;margin:0 auto;}
+.section-title{text-align:center;font-size:2rem;font-weight:700;margin-bottom:12px;}
+.section-sub{text-align:center;color:#606080;margin-bottom:60px;}
+
+/* SERVICES */
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:32px;transition:transform 0.2s,border-color 0.2s;}
+.card:hover{transform:translateY(-4px);border-color:rgba(99,102,241,0.4);}
+.card .icon{font-size:2.5rem;margin-bottom:16px;}
+.card h3{font-size:1.2rem;font-weight:700;margin-bottom:12px;}
+.card p{color:#808090;line-height:1.7;font-size:0.95rem;}
+
+/* PRICING */
+.pricing{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;}
+.price-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:36px;text-align:center;position:relative;transition:transform 0.2s;}
+.price-card:hover{transform:translateY(-4px);}
+.price-card.featured{border-color:rgba(99,102,241,0.6);background:rgba(99,102,241,0.08);}
+.price-card .tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6366f1,#a78bfa);color:#fff;padding:4px 16px;border-radius:50px;font-size:0.8rem;font-weight:700;}
+.price-card h3{font-size:1.1rem;color:#a0a0b0;margin-bottom:16px;}
+.price-card .price{font-size:2.8rem;font-weight:800;color:#fff;}
+.price-card .price span{font-size:1rem;color:#606080;}
+.price-card ul{list-style:none;margin:24px 0;text-align:left;}
+.price-card ul li{padding:8px 0;color:#808090;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.05);}
+.price-card ul li::before{content:"✓ ";color:#6366f1;font-weight:700;}
+
+/* CASES */
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
+.case-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;transition:transform 0.2s;}
+.case-card:hover{transform:translateY(-4px);border-color:rgba(99,102,241,0.4);}
+.case-img{width:100%;height:180px;object-fit:cover;background:linear-gradient(135deg,rgba(99,102,241,0.3),rgba(167,139,250,0.3));display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.case-content{padding:24px;}
+.case-content h3{font-size:1rem;font-weight:700;margin-bottom:8px;}
+.case-content p{color:#606080;font-size:0.9rem;line-height:1.6;}
+
+/* FAQ */
+.faq{max-width:700px;margin:0 auto;}
+.faq-item{border-bottom:1px solid rgba(255,255,255,0.08);padding:24px 0;}
+.faq-item h3{font-size:1rem;font-weight:600;margin-bottom:12px;color:#c0c0d0;}
+.faq-item p{color:#606080;line-height:1.7;font-size:0.9rem;}
+
+/* CTA */
+.cta{text-align:center;padding:100px 20px;background:radial-gradient(ellipse at 50% 50%,rgba(99,102,241,0.15) 0%,transparent 70%);}
+.cta h2{font-size:2.5rem;font-weight:800;margin-bottom:16px;}
+.cta p{color:#808090;margin-bottom:40px;font-size:1.1rem;}
+
+footer{text-align:center;padding:40px;color:#404050;font-size:0.85rem;border-top:1px solid rgba(255,255,255,0.05);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.active{display:flex;}
+.modal{background:#13131f;border:1px solid rgba(99,102,241,0.4);border-radius:20px;padding:40px;max-width:480px;width:90%;position:relative;}
+.modal h3{font-size:1.4rem;font-weight:700;margin-bottom:8px;}
+.modal .modal-price{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#6366f1,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:24px;}
+.modal-close{position:absolute;top:16px;right:20px;font-size:1.5rem;cursor:pointer;color:#606080;background:none;border:none;}
+.modal-close:hover{color:#fff;}
+.pay-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.pay-option{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.pay-option:hover{border-color:#6366f1;background:rgba(99,102,241,0.1);}
+.pay-option .pay-icon{font-size:1.8rem;margin-bottom:6px;}
+.pay-option .pay-name{font-size:0.85rem;font-weight:600;}
+.pay-option .pay-info{font-size:0.75rem;color:#606080;margin-top:4px;word-break:break-all;}
+.modal-note{color:#606080;font-size:0.85rem;text-align:center;margin-bottom:20px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">⛓️ 鏈叔 AI</div>
+  <div>
+    <a href="#services">服務</a>
+    <a href="#pricing">定價</a>
+    <a href="#cases">案例</a>
+    <a href="#contact">聯絡</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="badge">🚀 台灣第一個 AI 代理架設服務</div>
+    <h1>讓 AI 幫你工作<br>24小時不休息</h1>
+    <p>不需要技術背景，30分鐘內為你架設專屬 AI 助理。自動回覆、交易分析、NFT 管理，全部交給 AI。</p>
+    <a href="https://t.me/ChainUncel_CS_BOT" class="btn">立即免費諮詢 →</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="num">30min</div><div class="label">平均安裝時間</div></div>
+  <div class="stat"><div class="num">24/7</div><div class="label">全天候運作</div></div>
+  <div class="stat"><div class="num">NT$66</div><div class="label">最低入門價格</div></div>
+  <div class="stat"><div class="num">100%</div><div class="label">遠端安裝完成</div></div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <h2 class="section-title">服務項目</h2>
+  <p class="section-sub">從基礎到進階，全方位 AI 自動化解決方案</p>
+  <div class="services">
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h3>Telegram AI Bot</h3>
+      <p>架設你的專屬 AI 助理機器人，自動回覆訊息、回答問題、處理業務，讓你隨時都有助手待命。</p>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>市場行情追蹤</h3>
+      <p>即時追蹤你關心的市場動態，自動發送提醒，讓 AI 幫你掌握先機。</p>
+    </div>
+    <div class="card">
+      <div class="icon">🎨</div>
+      <h3>NFT 自動管理</h3>
+      <p>自動上架 NFT、管理定價、追蹤銷售，讓你的 NFT 系列 24 小時都在工作。</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>業務流程自動化</h3>
+      <p>客製化自動化工作流，從社群媒體發文到客服回覆，解放你的時間，專注更重要的事。</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <h2 class="section-title">定價方案</h2>
+  <p class="section-sub">先免費試用3天，滿意再付費！</p>
+  <div class="pricing">
+    <div class="price-card" style="border:2px solid #a78bfa; position:relative;">
+      <div class="tag" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">🎉 免費試用</div>
+      <h3>試用版</h3>
+      <div class="price"><span style="text-decoration:line-through;font-size:0.6em;color:#888;font-weight:400;">NT$99</span> 免費<span>/3天</span></div>
+      <ul>
+        <li>3天完整體驗</li>
+        <li>專屬 Telegram AI 助理</li>
+        <li>只需提供名字 + 帳號</li>
+        <li>其他全部我們搞定</li>
+      </ul>
+      <a href="https://t.me/ChainUncel_CS_BOT" class="btn" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">免費體驗 →</a>
+    </div>
+    <div class="price-card">
+      <h3>體驗版</h3>
+      <div class="price"><span style="text-decoration:line-through;font-size:0.6em;color:#888;font-weight:400;">NT$168</span> NT$66</div>
+      <ul>
+        <li>架設 Telegram AI Bot</li>
+        <li>基本自動回覆設定</li>
+        <li>遠端安裝服務</li>
+        <li>3天技術支援</li>
+      </ul>
+      <a href="#" class="btn" onclick="openModal(&#39;體驗版&#39;,&#39;NT$168&#39;)">立即購買</a>
+    </div>
+    <div class="price-card featured">
+      <div class="tag">最受歡迎</div>
+      <h3>實用版</h3>
+      <div class="price"><span style="text-decoration:line-through;font-size:0.6em;color:#888;font-weight:400;">NT$299</span> NT$99</div>
+      <ul>
+        <li>體驗版全部功能</li>
+        <li>市場行情追蹤</li>
+        <li>智慧整理資訊、提醒待辦</li>
+        <li>30天技術支援</li>
+      </ul>
+      <a href="#" class="btn" onclick="openModal(&#39;實用版&#39;,&#39;NT$299&#39;)">立即購買</a>
+    </div>
+    <div class="price-card">
+      <h3>商業版</h3>
+      <div class="price"><span style="text-decoration:line-through;font-size:0.6em;color:#888;font-weight:400;">NT$399</span> NT$188<span>/月</span></div>
+      <ul>
+        <li>實用版全部功能</li>
+        <li>VPS 24小時代管</li>
+        <li>幫你跑業務、管客戶</li>
+        <li>無限技術支援</li>
+      </ul>
+      <a href="#" class="btn" onclick="openModal(&#39;商業版&#39;,&#39;NT$399/月&#39;)">立即購買</a>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section id="cases">
+  <h2 class="section-title">成功案例</h2>
+  <p class="section-sub">真實運作中的 AI 代理系統</p>
+  <div class="cases">
+    <div class="case-card">
+      <div class="case-img">🛍️</div>
+      <div class="case-content">
+        <h3>網拍賣家 小美・台中</h3>
+        <p>「我每天早上起來就要回一百多則訊息，問有沒有貨、問價錢、問怎麼付款，根本沒時間整理訂單。」</p>
+        <p style="color:#a78bfa;font-size:0.9rem;">✅ 現在 AI 全程回覆，她只管出貨。<strong>每天省下 3 小時</strong>。</p>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-img">💆</div>
+      <div class="case-content">
+        <h3>美甲工作室 Tina・新北</h3>
+        <p>「客人都是半夜才有空傳訊問預約，我睡著沒回，早上起來他已經去別家了。」</p>
+        <p style="color:#a78bfa;font-size:0.9rem;">✅ AI 24小時自動說明價格、確認時段。<strong>每個月多留住 5~8 個客人</strong>。</p>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-img">🍱</div>
+      <div class="case-content">
+        <h3>便當店老闆 阿明・高雄</h3>
+        <p>「每天早上 7 點要手動傳菜單給 60 幾個客戶，傳完早餐都涼了，還常常漏傳。」</p>
+        <p style="color:#a78bfa;font-size:0.9rem;">✅ 設定好，AI 自動早上 7 點發菜單、收訂單。<strong>一次設定，天天自動</strong>。</p>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-img">🏠</div>
+      <div class="case-content">
+        <h3>房仲業務 阿傑・台北</h3>
+        <p>「客戶問物件資料，我要翻半天才找得到，回太慢人家就跑了，這行速度就是一切。」</p>
+        <p style="color:#a78bfa;font-size:0.9rem;">✅ AI 秒回物件資訊、帶看時間。<strong>成交速度快一倍</strong>。</p>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-img">📚</div>
+      <div class="case-content">
+        <h3>補習班招生 Karen・台南</h3>
+        <p>「每到招生季，家長問課程、問師資、問費用，同樣的問題回到手軟，還要顧現場上課。」</p>
+        <p style="color:#a78bfa;font-size:0.9rem;">✅ AI 統一回覆諮詢，自動預約試聽。<strong>招生人數增加 40%</strong>。</p>
+      </div>
+    </div>
+    <div class="case-card">
+      <div class="case-img">🧴</div>
+      <div class="case-content">
+        <h3>保養品代理 小欣・台中</h3>
+        <p>「做直銷最累的就是一直解釋產品，每個人問的都差不多，但我還是得一個一個回。」</p>
+        <p style="color:#a78bfa;font-size:0.9rem;">✅ AI 幫你介紹產品、解答疑問，真人只管收單。<strong>個人業績翻倍</strong>。</p>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <h2 class="section-title">常見問題</h2>
+  <p class="section-sub"></p>
+  <div class="faq">
+    <div class="faq-item">
+      <h3>我需要有技術背景嗎？</h3>
+      <p>完全不需要！我們提供全程遠端安裝服務，你只需要提供基本資訊，30分鐘內就能開始使用。</p>
+    </div>
+    <div class="faq-item">
+      <h3>我需要自己買 VPS 嗎？</h3>
+      <p>入門版和標準版可以先用免費雲端服務，商業版我們幫你規劃最適合的 VPS 方案，費用透明。</p>
+    </div>
+    <div class="faq-item">
+      <h3>為什麼 AI 費用免費？</h3>
+      <p>我是 Gate.io 推廣夥伴。客戶用我的邀請碼免費註冊 Gate.io（全球前三大加密貨幣交易所），即可獲得 GateAI 免費 API，AI 費用由 Gate.io 贊助。<strong>完全透明，沒有隱藏費用。</strong></p>
+    </div>
+    <div class="faq-item">
+      <h3>需要註冊什麼帳號嗎？</h3>
+      <p>只需要用我的邀請碼免費註冊 Gate.io 帳號（全球前三大交易所），申請 GateAI API key 即可。整個流程約 5 分鐘，我全程教學。</p>
+    </div>
+    <div class="faq-item">
+      <h3>安裝後如果出問題怎麼辦？</h3>
+      <p>我們提供技術支援，直接 Telegram 聯絡，通常30分鐘內回覆並解決問題。</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta" id="contact">
+  <h2>準備好讓 AI 幫你工作了嗎？</h2>
+  <p>現在諮詢完全免費，30分鐘內為你規劃最適合的方案</p>
+  <a href="https://t.me/ChainUncel_CS_BOT" class="btn">📱 Telegram 免費諮詢</a>
+</div>
+
+<footer>
+  <p>© 2026 鏈叔 AI 代理服務 · 台灣</p>
+</footer>
+
+
+<!-- 付款 Modal -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modalPlan">方案名稱</h3>
+    <div class="modal-price" id="modalPrice">NT68</div>
+    <p class="modal-note">付款完成後，截圖傳給客服 @ChainMaster_HH_bot<br>30分鐘內為你完成安裝 🚀</p>
+    <div class="pay-options">
+      <div class="pay-option">
+        <div class="pay-icon">🏦</div>
+        <div class="pay-name">遠東銀行匯款</div>
+        <div class="pay-info">805-04300497675087</div>
+      </div>
+      <div class="pay-option">
+        <div class="pay-icon">💚</div>
+        <div class="pay-name">LINE Pay</div>
+        <div class="pay-info">ID: Howard_hao</div>
+      </div>
+      <div class="pay-option">
+        <div class="pay-icon">🛍️</div>
+        <div class="pay-name">街口支付</div>
+        <div class="pay-info">(396) 900669920</div>
+      </div>
+      <div class="pay-option">
+        <div class="pay-icon">🔶</div>
+        <div class="pay-name">USDT BEP20</div>
+        <div class="pay-info">0x5722...336B</div>
+      </div>
+    </div>
+    <a href="https://t.me/ChainMaster_HH_bot" class="btn" style="width:100%;display:block;text-align:center;">付款後找客服 →</a>
+  </div>
+</div>
+
+<script>
+function openModal(plan, price){
+  document.getElementById("modalPlan").textContent = plan;
+  document.getElementById("modalPrice").textContent = price;
+  document.getElementById("payModal").classList.add("active");
+}
+function closeModal(){
+  document.getElementById("payModal").classList.remove("active");
+}
+document.getElementById("payModal").addEventListener("click", function(e){
+  if(e.target === this) closeModal();
+});
+
+// 替換所有立即購買按鈕
+document.querySelectorAll(".price-card .btn").forEach(function(btn, i){
+  const plans = [
+    ["體驗版", "NT$66"],
+    ["實用版", "NT$99"],
+    ["商業版", "NT$188/月"]
+  ];
+  btn.href = "#";
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    openModal(plans[i][0], plans[i][1]);
+  });
+});
+</script>
+</body>
+</html>
+<!-- 在 footer 前插入付款和更多案例的 JS patch -->
+<script>
+// 動態插入付款區塊
+const paySection = document.createElement("section");
+paySection.id = "payment";
+paySection.style.cssText = "padding:80px 20px;max-width:800px;margin:0 auto;text-align:center;";
+paySection.innerHTML = `
+<h2 style="font-size:2rem;font-weight:700;margin-bottom:12px;">付款方式</h2>
+<p style="color:#606080;margin-bottom:40px;">選擇最方便的付款方式</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;">
+    <div style="font-size:2rem;margin-bottom:12px;">🏦</div>
+    <h3 style="margin-bottom:8px;">銀行匯款</h3>
+    <p style="color:#606080;font-size:0.9rem;">遠東銀行 (805)<br>帳號：04300497675087</p>
+  </div>
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;">
+    <div style="font-size:2rem;margin-bottom:12px;">💚</div>
+    <h3 style="margin-bottom:8px;">LINE Pay</h3>
+    <p style="color:#606080;font-size:0.9rem;">LINE ID：Howard_hao<br>即時到帳，免手續費</p>
+  </div>
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;">
+    <div style="font-size:2rem;margin-bottom:12px;">🔶</div>
+    <h3 style="margin-bottom:8px;">USDT (BEP20)</h3>
+    <p style="color:#606080;font-size:0.9rem;word-break:break-all;">0x5722...336B<br>BNB Smart Chain</p>
+  </div>
+  <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;">
+    <div style="font-size:2rem;margin-bottom:12px;">🛍️</div>
+    <h3 style="margin-bottom:8px;">街口支付</h3>
+    <p style="color:#606080;font-size:0.9rem;">手機：0910917502<br>掃碼即付，免手續費</p>
+  </div>
+
+</div>
+`;
+document.querySelector(".cta").before(paySection);
+</script>
